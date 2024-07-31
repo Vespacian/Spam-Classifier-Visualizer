@@ -1,4 +1,4 @@
-package spamclassifiervisualizer.src.main.java.com.eb;
+package com.eb;
 // GIVEN CLASS
 
 // Reprsents a singular split within our dataset based some feature and threshold
