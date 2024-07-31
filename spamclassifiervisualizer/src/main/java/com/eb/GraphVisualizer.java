@@ -1,3 +1,4 @@
+package spamclassifiervisualizer.src.main.java.com.eb;
 
 
 public class GraphVisualizer {
