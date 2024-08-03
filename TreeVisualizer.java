@@ -1,66 +1,34 @@
+import java.util.Scanner;
 
-// import org.jgrapht.Graph;
-import java.util.ArrayList;
-import java.util.List;
+// import org.jgrapht.graph.DefaultEdge;
+// import org.jgrapht.graph.SimpleGraph;
 
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.SimpleGraph;
+/**
+ * This class will allow for regular binary tree functions such as
+ * adding and removing nodes in any way preference. Also adds a special visualize
+ * feature that gives a visual representation of the tree created. 
+ */
+public class TreeVisualizer<T> extends NodeTree<T> {
 
-public class TreeVisualizer<T> {
-    public Node<T> overallRoot;
+    // empty constructor for initializing
+    public TreeVisualizer() {}
 
-    
+    // builds tree with given tree for Spam Classifier
+    // @param sc - format as described in SC specification
+    // tags: feature, threshold, (n/a) label for each line
+    public TreeVisualizer(Scanner sc) {
+        // 
+    }
 
-
-    // variable Node in Tree
-    private class Node<S> {
-        private List<S> data;
-        private List<Node<S>> children;
-
-        // constructors
-        public Node(S... data) {
-            this(new ArrayList<>(), data);
+    // provides a visual representation of the tree constructed
+    // @throws IllegalStateException if the tree is nonexistent
+    public void visualize() {
+        if (overallRoot == null) {
+            throw new IllegalStateException("The tree doesn't exist, bad bad");
         }
 
-        public Node(List<Node<S>> children, S... data) {
-            this.children = (children == null)? new ArrayList<>() : children;
-            this.data = new ArrayList<>();
-            for (S val : data) {
-                this.data.add(val);
-            }
-        }
+        // TODO with library
 
-        // getters
-        public List<S> getData() {
-            return data;
-        }
-
-        // prob to change later as I make the class
-        public List<Node<S>> getChildren() {
-            return children;
-        }
-
-        // toString
     }
 
 }
-
-
-
-
-    // public static void main(String[] args) {
-    //     SimpleGraph<String, DefaultEdge> graph = new SimpleGraph<>(DefaultEdge.class);
-
-    //     // Add some vertices
-    //     graph.addVertex("A");
-    //     graph.addVertex("B");
-    //     graph.addVertex("C");
-
-    //     // Add some edges
-    //     graph.addEdge("A", "B");
-    //     graph.addEdge("B", "C");
-    //     graph.addEdge("C", "A");
-
-    //     // Print the graph
-    //     System.out.println("Graph: " + graph);
-    // }

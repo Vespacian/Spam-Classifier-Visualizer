@@ -12,6 +12,7 @@ public class Client {
     // You should not do this in your homework as it's a forbidden feature, but if you're
     // interested in how this works, look up 'functional programming'!                
     public static final Function<List<String>, Classifiable> CONVERTER = Email::toClassifiable;
+    public static boolean debug = false;
 
     public static void main(String[] args) throws FileNotFoundException {
         Scanner console = new Scanner(System.in);
