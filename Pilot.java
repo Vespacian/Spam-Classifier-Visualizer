@@ -20,7 +20,7 @@ public class Pilot extends JFrame{
     }
 
     public Pilot() {
-// Create a binary tree graph
+    // Create a binary tree graph
         Graph<String, DefaultEdge> binaryTree = new DefaultDirectedGraph<>(DefaultEdge.class);
 
         // Add vertices (nodes)
