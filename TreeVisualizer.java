@@ -2,6 +2,7 @@
 // java libraries
 import java.util.Scanner;
 import javax.swing.JFrame;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.awt.Dimension;
@@ -14,6 +15,7 @@ import org.jgrapht.ext.JGraphXAdapter;
 
 // Visualization
 import com.mxgraph.layout.mxCompactTreeLayout;
+import com.mxgraph.model.mxCell;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.view.mxGraph;
 import com.mxgraph.view.mxStylesheet;
@@ -28,9 +30,11 @@ import com.mxgraph.util.mxRectangle;
  */
 public class TreeVisualizer extends JFrame{
     private Node overallRoot;
+    private Map<String, String> idToData;
 
     // initializes the JFrame board
     public TreeVisualizer() {
+        idToData = new HashMap<>();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(500, 500); // increase default frame size if needed
         setResizable(true);
@@ -49,16 +53,20 @@ public class TreeVisualizer extends JFrame{
     }
 
     private int idCounter = 0;
+    // fills up the tree with nodes to be used to create the visual
     // completely assumes that the file is in the correct format
     private Node buildTree(Scanner sc) {
         String line = sc.nextLine();
         idCounter++;
+        String strCounter = "" + idCounter;
         // only two types of nodes possible: 
         if (line.startsWith("Feature:")) {
             String threshold = sc.nextLine();
-            return new Node(idCounter, line + "\n" + threshold, buildTree(sc), buildTree(sc));
+            idToData.put(strCounter, line + "\n" + threshold);
+            return new Node(strCounter, line + "\n" + threshold, buildTree(sc), buildTree(sc));
         } else {
-            return new Node(idCounter, line); // leaf
+            idToData.put(strCounter, line);
+            return new Node(strCounter, line); // leaf
         }
     }
 
@@ -71,22 +79,23 @@ public class TreeVisualizer extends JFrame{
 
         // adding nodes and edges to the graph
         Graph<String, DefaultEdge> tree = new DefaultDirectedGraph<>(DefaultEdge.class);
-        tree.addVertex(overallRoot.getData());
+        tree.addVertex(overallRoot.getId());
         buildGraph(tree, overallRoot);
 
         displayGraph(tree);
     }
 
+    // adds vertices and edges to the graph
     private void buildGraph(Graph<String, DefaultEdge> tree, Node root) {
         if (root != null) {
             // if available, add left and right nodes + edges
             if (root.left != null) {
-                tree.addVertex(root.left.getData());
-                tree.addEdge(root.getData(), root.left.getData());
+                tree.addVertex(root.left.getId());
+                tree.addEdge(root.getId(), root.left.getId());
             }
             if (root.right != null) {
-                tree.addVertex(root.right.getData());
-                tree.addEdge(root.getData(), root.right.getData());
+                tree.addVertex(root.right.getId());
+                tree.addEdge(root.getId(), root.right.getId());
             }            
 
             // traverse left and right
@@ -95,9 +104,21 @@ public class TreeVisualizer extends JFrame{
         }
     }
 
+    // generates and displays the graph in the JFrame
     private void displayGraph(Graph<String, DefaultEdge> tree) {
         // creating visualization
-        JGraphXAdapter<String, DefaultEdge> adapter = new JGraphXAdapter<>(tree);
+        JGraphXAdapter<String, DefaultEdge> adapter = new JGraphXAdapter<>(tree) {
+            @Override
+            public String convertValueToString(Object val) {
+                if (val instanceof mxCell) {
+                    Object cellVal = ((mxCell) val).getValue();
+                    String key = cellVal.toString();
+                    return idToData.get(key);
+                }
+                return super.convertValueToString(val);
+            }
+        };
+
         applyStyles(adapter, styles(adapter));
 
         // creating layout of graph to make it look like tree
@@ -125,6 +146,19 @@ public class TreeVisualizer extends JFrame{
 
         // show the tree
         setVisible(true);
+    }
+
+    // applies the NODE and EDGE styles for every node and edge in the 
+    // given graph
+    private void applyStyles(mxGraph graph, mxStylesheet stylesheet) {
+        Object[] cells = graph.getChildCells(graph.getDefaultParent(), true, true);
+        for (Object cell : cells) {
+            if (graph.getModel().isVertex(cell)) {
+                graph.setCellStyle("NODE", new Object[] {cell});
+            } else if (graph.getModel().isEdge(cell)) {
+                graph.setCellStyle("EDGE", new Object[] {cell});
+            }
+        }
     }
 
     // generates styles for the nodes and edges of the given graph
@@ -163,19 +197,7 @@ public class TreeVisualizer extends JFrame{
         return stylesheet;
     }
 
-    // applies the NODE and EDGE styles for every node and edge in the 
-    // given graph
-    private void applyStyles(mxGraph graph, mxStylesheet stylesheet) {
-        Object[] cells = graph.getChildCells(graph.getDefaultParent(), true, true);
-        for (Object cell : cells) {
-            if (graph.getModel().isVertex(cell)) {
-                graph.setCellStyle("NODE", new Object[] {cell});
-            } else if (graph.getModel().isEdge(cell)) {
-                graph.setCellStyle("EDGE", new Object[] {cell});
-            }
-        }
-    }
-
+    // builds an example tree and displays it in JFrame to show visualize works
     public void testVisualize() {
         Graph<String, DefaultEdge> tree = new DefaultDirectedGraph<>(DefaultEdge.class);
 
@@ -199,29 +221,33 @@ public class TreeVisualizer extends JFrame{
         displayGraph(tree);
     }
 
+    // represents a singular node in the Tree
+    // the primary purpose behind the inner Node class is to
+    // use this structure to translate easily into visualization
     private class Node {
         // unique identification of nodes in order to create edges
-        private int id;
+        private String id;
         private String data;
         public Node left;
         public Node right;
 
-        public Node(int id, String data) {
+        public Node(String id, String data) {
             this(id, data, null, null);
         }
 
-        public Node(int id, String data, Node left, Node right) {
+        public Node(String id, String data, Node left, Node right) {
             this.id = id;
             this.data = data;
             this.left = left;
             this.right = right;
         }
 
+        @SuppressWarnings("unused")
         public String getData() {
             return this.data;
         }
 
-        public int getId() {
+        public String getId() {
             return this.id;
         }
     }
