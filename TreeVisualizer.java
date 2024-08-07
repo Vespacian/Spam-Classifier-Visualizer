@@ -134,9 +134,11 @@ public class TreeVisualizer extends JFrame{
         component.getGraph().getView().setTranslate(new mxPoint(padding, padding)); // initial position
 
         mxRectangle graphSize = adapter.getGraphBounds(); // adding padding
+        int newWidth = (int) graphSize.getWidth() + padding*2;
+        int newHeight = (int) graphSize.getHeight() + padding*2;
         Dimension paddedSize = new Dimension(
-            (int) graphSize.getWidth() + padding*2, 
-            (int) graphSize.getHeight() + padding*2
+            (newWidth > 800)? 800 : newWidth, 
+            (newHeight > 800)? 800 : newHeight
         );
         component.setPreferredSize(paddedSize);
         getContentPane().add(component);
@@ -154,7 +156,12 @@ public class TreeVisualizer extends JFrame{
         Object[] cells = graph.getChildCells(graph.getDefaultParent(), true, true);
         for (Object cell : cells) {
             if (graph.getModel().isVertex(cell)) {
-                graph.setCellStyle("NODE", new Object[] {cell});
+                if (graph.convertValueToString(cell).startsWith("Feature:")) {
+                    graph.setCellStyle("INTERMEDIARY_NODE", new Object[] {cell});
+                } else {
+                    graph.setCellStyle("LEAF_NODE", new Object[] {cell});
+                }
+                
             } else if (graph.getModel().isEdge(cell)) {
                 graph.setCellStyle("EDGE", new Object[] {cell});
             }
@@ -165,29 +172,60 @@ public class TreeVisualizer extends JFrame{
     // returns the generated mxStyleSheet
     private mxStylesheet styles(mxGraph graph) {
         mxStylesheet stylesheet = graph.getStylesheet();
-        Map<String, Object> nodeStyles = new Hashtable<>();
+        Map<String, Object> intermediaryNodeStyles = new Hashtable<>();
+        Map<String, Object> leafNodeStyles = new Hashtable<>();
+    
+        // Intermediary node styling
+        intermediaryNodeStyles.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_RECTANGLE);
+        intermediaryNodeStyles.put(mxConstants.STYLE_FONTCOLOR, "#000000");
+        intermediaryNodeStyles.put(mxConstants.STYLE_FILLCOLOR, "#c9daf8");
+        intermediaryNodeStyles.put(mxConstants.STYLE_STROKECOLOR, "#000000");
+        intermediaryNodeStyles.put(mxConstants.STYLE_FONTSIZE, 12);
+        intermediaryNodeStyles.put(mxConstants.STYLE_FONTSTYLE, mxConstants.FONT_BOLD);
+        intermediaryNodeStyles.put(mxConstants.STYLE_FONTFAMILY, "Arial");
 
-        // node styling
-        nodeStyles.put(mxConstants.STYLE_SHAPE, mxConstants.ARROW_OVAL);
-        nodeStyles.put(mxConstants.STYLE_FONTCOLOR, "#000000");
-        nodeStyles.put(mxConstants.STYLE_FILLCOLOR, "#87CEEB");
-        nodeStyles.put(mxConstants.STYLE_STROKECOLOR, "#000000");
-        nodeStyles.put(mxConstants.STYLE_FONTSIZE, 16);
+        // fluid movements
+        intermediaryNodeStyles.put(mxConstants.STYLE_MOVABLE, true);
+        intermediaryNodeStyles.put(mxConstants.STYLE_EDITABLE, false);
+        intermediaryNodeStyles.put(mxConstants.STYLE_AUTOSIZE, true);
+        intermediaryNodeStyles.put(mxConstants.STYLE_RESIZABLE, true);
 
-        // node spacing
-        nodeStyles.put(mxConstants.STYLE_AUTOSIZE, true);
-        nodeStyles.put(mxConstants.STYLE_SPACING, 10);
+        // align labels in the middle
+        intermediaryNodeStyles.put(mxConstants.STYLE_ALIGN, mxConstants.ALIGN_CENTER);
+        intermediaryNodeStyles.put(mxConstants.STYLE_VERTICAL_ALIGN, mxConstants.ALIGN_CENTER);
+        intermediaryNodeStyles.put(mxConstants.STYLE_LABEL_POSITION, mxConstants.ALIGN_CENTER);
+        intermediaryNodeStyles.put(mxConstants.STYLE_VERTICAL_LABEL_POSITION, mxConstants.ALIGN_CENTER);
+    
 
-        // node moveable
-        nodeStyles.put(mxConstants.STYLE_MOVABLE, true);
-        nodeStyles.put(mxConstants.STYLE_RESIZABLE, false);
-        nodeStyles.put(mxConstants.STYLE_EDITABLE, false);
+        // Leaf node styling
+        leafNodeStyles.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_RECTANGLE);
+        leafNodeStyles.put(mxConstants.STYLE_FONTCOLOR, "#000000");
+        leafNodeStyles.put(mxConstants.STYLE_FILLCOLOR, "#d9ead3");
+        leafNodeStyles.put(mxConstants.STYLE_STROKECOLOR, "#000000");
+        leafNodeStyles.put(mxConstants.STYLE_FONTSIZE, 12);
+        leafNodeStyles.put(mxConstants.STYLE_FONTSTYLE, mxConstants.FONT_BOLD);
+        leafNodeStyles.put(mxConstants.STYLE_FONTFAMILY, "Arial");
 
-        // add node styles to sheet
-        stylesheet.putCellStyle("NODE", nodeStyles);
+        // fluid movements
+        leafNodeStyles.put(mxConstants.STYLE_MOVABLE, true);
+        leafNodeStyles.put(mxConstants.STYLE_EDITABLE, false);
+        leafNodeStyles.put(mxConstants.STYLE_AUTOSIZE, true);
+        leafNodeStyles.put(mxConstants.STYLE_RESIZABLE, true);
+
+        // align labels in the middle
+        leafNodeStyles.put(mxConstants.STYLE_ALIGN, mxConstants.ALIGN_CENTER);
+        leafNodeStyles.put(mxConstants.STYLE_VERTICAL_ALIGN, mxConstants.ALIGN_CENTER);
+        leafNodeStyles.put(mxConstants.STYLE_LABEL_POSITION, mxConstants.ALIGN_CENTER);
+        leafNodeStyles.put(mxConstants.STYLE_VERTICAL_LABEL_POSITION, mxConstants.ALIGN_CENTER);
+    
+        // Add node styles to sheet
+        stylesheet.putCellStyle("INTERMEDIARY_NODE", intermediaryNodeStyles);
+        stylesheet.putCellStyle("LEAF_NODE", leafNodeStyles);
 
         // edge styling
         Map<String, Object> edgeStyles = new Hashtable<>();
+
+        // edgeStyles.put(mxConstants.STYLE_SHAPE, mxConstants.ARROW_CLASSIC);
         edgeStyles.put(mxConstants.STYLE_STROKECOLOR, "#000000");
         edgeStyles.put(mxConstants.STYLE_NOLABEL, true);
 
