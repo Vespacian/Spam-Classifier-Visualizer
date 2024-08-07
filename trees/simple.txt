@@ -1,0 +1,13 @@
+Feature: wordPercent~here
+Threshold: 0.125
+Feature: wordPercent~are
+Threshold: 0.16666666666666666
+Feature: wordPercent~for
+Threshold: 0.16666666666666666
+Feature: wordPercent~our
+Threshold: 0.0625
+ham
+spam
+ham
+ham
+ham

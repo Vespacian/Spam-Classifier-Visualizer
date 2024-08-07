@@ -1,36 +1,64 @@
-import java.util.Scanner;
 
-// import org.jgrapht.graph.DefaultEdge;
-// import org.jgrapht.graph.SimpleGraph;
+// java libraries
+import java.util.Scanner;
+import javax.swing.JFrame;
+import java.util.Hashtable;
+import java.util.Map;
+import java.awt.Dimension;
+
+// Datastructures
+import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.Graph;
+import org.jgrapht.ext.JGraphXAdapter;
+
+// Visualization
+import com.mxgraph.layout.mxCompactTreeLayout;
+import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.view.mxGraph;
+import com.mxgraph.view.mxStylesheet;
+import com.mxgraph.util.mxConstants;
+import com.mxgraph.util.mxPoint;
+import com.mxgraph.util.mxRectangle;
+
 
 /**
  * This class builds a binary tree and adds a special visualize
  * feature that gives a visual representation of the tree created. 
  */
-public class TreeVisualizer<T> extends NodeTree<String> {
+public class TreeVisualizer extends JFrame{
+    private Node overallRoot;
 
-    // empty constructor for initialization
-    public TreeVisualizer() {}
+    // initializes the JFrame board
+    public TreeVisualizer() {
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(500, 500); // increase default frame size if needed
+        setResizable(true);
+        setVisible(false);
+    }
 
     // builds tree with given tree for Spam Classifier
     // @param sc - format as described in SC specification
-    // tags: feature, threshold, (n/a) label for each line
+    // tags: feature, threshold, label for each line
     public TreeVisualizer(Scanner sc) {
+        this();
         if (!sc.hasNextLine()) {
             throw new IllegalStateException("blah blah blah No file to use - empty tree made blah blah blah");
         }
         overallRoot = buildTree(sc);
     }
 
+    private int idCounter = 0;
     // completely assumes that the file is in the correct format
-    private Node<String> buildTree(Scanner sc) {
+    private Node buildTree(Scanner sc) {
         String line = sc.nextLine();
+        idCounter++;
         // only two types of nodes possible: 
         if (line.startsWith("Feature:")) {
             String threshold = sc.nextLine();
-            return new Node<String>(buildTree(sc), buildTree(sc), line, threshold);
+            return new Node(idCounter, line + "\n" + threshold, buildTree(sc), buildTree(sc));
         } else {
-            return new Node<String>(line); // leaf
+            return new Node(idCounter, line); // leaf
         }
     }
 
@@ -38,11 +66,164 @@ public class TreeVisualizer<T> extends NodeTree<String> {
     // @throws IllegalStateException if the tree is nonexistent
     public void visualize() {
         if (overallRoot == null) {
-            throw new IllegalStateException("The tree doesn't exist, bad bad");
+            throw new IllegalStateException("The tree doesn't exist. Make sure to input properly formatted tree file");
         }
 
-        // TODO with library
+        // adding nodes and edges to the graph
+        Graph<String, DefaultEdge> tree = new DefaultDirectedGraph<>(DefaultEdge.class);
+        tree.addVertex(overallRoot.getData());
+        buildGraph(tree, overallRoot);
 
+        displayGraph(tree);
+    }
+
+    private void buildGraph(Graph<String, DefaultEdge> tree, Node root) {
+        if (root != null) {
+            // if available, add left and right nodes + edges
+            if (root.left != null) {
+                tree.addVertex(root.left.getData());
+                tree.addEdge(root.getData(), root.left.getData());
+            }
+            if (root.right != null) {
+                tree.addVertex(root.right.getData());
+                tree.addEdge(root.getData(), root.right.getData());
+            }            
+
+            // traverse left and right
+            buildGraph(tree, root.left);
+            buildGraph(tree, root.right);
+        }
+    }
+
+    private void displayGraph(Graph<String, DefaultEdge> tree) {
+        // creating visualization
+        JGraphXAdapter<String, DefaultEdge> adapter = new JGraphXAdapter<>(tree);
+        applyStyles(adapter, styles(adapter));
+
+        // creating layout of graph to make it look like tree
+        mxCompactTreeLayout layout = new mxCompactTreeLayout(adapter);
+        layout.setHorizontal(false);
+        layout.setNodeDistance(20);
+        layout.setLevelDistance(35);
+        layout.execute(adapter.getDefaultParent());
+
+        // positioning graph
+        int padding = 50;
+        mxGraphComponent component = new mxGraphComponent(adapter);
+        component.getGraph().getView().setTranslate(new mxPoint(padding, padding)); // initial position
+
+        mxRectangle graphSize = adapter.getGraphBounds(); // adding padding
+        Dimension paddedSize = new Dimension(
+            (int) graphSize.getWidth() + padding*2, 
+            (int) graphSize.getHeight() + padding*2
+        );
+        component.setPreferredSize(paddedSize);
+        getContentPane().add(component);
+
+        // resize frame
+        pack();
+
+        // show the tree
+        setVisible(true);
+    }
+
+    // generates styles for the nodes and edges of the given graph
+    // returns the generated mxStyleSheet
+    private mxStylesheet styles(mxGraph graph) {
+        mxStylesheet stylesheet = graph.getStylesheet();
+        Map<String, Object> nodeStyles = new Hashtable<>();
+
+        // node styling
+        nodeStyles.put(mxConstants.STYLE_SHAPE, mxConstants.ARROW_OVAL);
+        nodeStyles.put(mxConstants.STYLE_FONTCOLOR, "#000000");
+        nodeStyles.put(mxConstants.STYLE_FILLCOLOR, "#87CEEB");
+        nodeStyles.put(mxConstants.STYLE_STROKECOLOR, "#000000");
+        nodeStyles.put(mxConstants.STYLE_FONTSIZE, 16);
+
+        // node spacing
+        nodeStyles.put(mxConstants.STYLE_AUTOSIZE, true);
+        nodeStyles.put(mxConstants.STYLE_SPACING, 10);
+
+        // node moveable
+        nodeStyles.put(mxConstants.STYLE_MOVABLE, true);
+        nodeStyles.put(mxConstants.STYLE_RESIZABLE, false);
+        nodeStyles.put(mxConstants.STYLE_EDITABLE, false);
+
+        // add node styles to sheet
+        stylesheet.putCellStyle("NODE", nodeStyles);
+
+        // edge styling
+        Map<String, Object> edgeStyles = new Hashtable<>();
+        edgeStyles.put(mxConstants.STYLE_STROKECOLOR, "#000000");
+        edgeStyles.put(mxConstants.STYLE_NOLABEL, true);
+
+        // add edge styles to sheet
+        stylesheet.putCellStyle("EDGE", edgeStyles);
+
+        return stylesheet;
+    }
+
+    // applies the NODE and EDGE styles for every node and edge in the 
+    // given graph
+    private void applyStyles(mxGraph graph, mxStylesheet stylesheet) {
+        Object[] cells = graph.getChildCells(graph.getDefaultParent(), true, true);
+        for (Object cell : cells) {
+            if (graph.getModel().isVertex(cell)) {
+                graph.setCellStyle("NODE", new Object[] {cell});
+            } else if (graph.getModel().isEdge(cell)) {
+                graph.setCellStyle("EDGE", new Object[] {cell});
+            }
+        }
+    }
+
+    public void testVisualize() {
+        Graph<String, DefaultEdge> tree = new DefaultDirectedGraph<>(DefaultEdge.class);
+
+        // Add vertices (nodes)
+        tree.addVertex("Root");
+        tree.addVertex("LeftChild");
+        tree.addVertex("RightChild");
+        tree.addVertex("LeftLeftChild");
+        tree.addVertex("LeftRightChild");
+        tree.addVertex("RightLeftChild");
+        tree.addVertex("RightRightChild");
+
+        // Add edges to form a binary tree
+        tree.addEdge("Root", "LeftChild");
+        tree.addEdge("Root", "RightChild");
+        tree.addEdge("LeftChild", "LeftLeftChild");
+        tree.addEdge("LeftChild", "LeftRightChild");
+        tree.addEdge("RightChild", "RightLeftChild");
+        tree.addEdge("RightChild", "RightRightChild");
+
+        displayGraph(tree);
+    }
+
+    private class Node {
+        // unique identification of nodes in order to create edges
+        private int id;
+        private String data;
+        public Node left;
+        public Node right;
+
+        public Node(int id, String data) {
+            this(id, data, null, null);
+        }
+
+        public Node(int id, String data, Node left, Node right) {
+            this.id = id;
+            this.data = data;
+            this.left = left;
+            this.right = right;
+        }
+
+        public String getData() {
+            return this.data;
+        }
+
+        public int getId() {
+            return this.id;
+        }
     }
 
 }

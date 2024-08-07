@@ -17,6 +17,15 @@ public class Client {
 
     public static void main(String[] args) throws FileNotFoundException {
         Scanner console = new Scanner(System.in);
+
+        if (DEBUG) {
+            System.out.println("What tree file do you want visualized? Enter the file path");
+            System.out.print("> ");
+            Scanner file = new Scanner(new File(console.next()));
+            TreeVisualizer vis = new TreeVisualizer(file);
+            vis.visualize();
+        }
+
         System.out.println("Welcome to the CSE 123 Classifier! " +
                            "To begin, enter your desired mode of operation:");
         System.out.println();
@@ -30,11 +39,12 @@ public class Client {
             System.out.println("1) Test with an input file");
             System.out.println("2) Get testing accuracy");
             System.out.println("3) Save to a file");
-            System.out.println("4) Quit");
+            System.out.println("4) Visualize tree with .txt");
+            System.out.println("5) Quit");
             System.out.print("Enter your choice here: ");
 
             choice = console.nextInt();
-            while (choice != 1 && choice != 2 && choice != 3 && choice != 4) {
+            while (choice != 1 && choice != 2 && choice != 3 && choice != 4 && choice != 5) {
                 System.out.print("Please enter a valid option from above: ");
                 choice = console.nextInt();
             }
@@ -47,8 +57,14 @@ public class Client {
             } else if (choice == 3) {
                 System.out.print("Please enter the file name you'd like to save to: ");
                 c.save(new PrintStream(console.next()));
+            } else if (choice == 4) {
+                System.out.println("What tree file do you want visualized? Enter the file path");
+                System.out.print("> ");
+                Scanner file = new Scanner(new File(console.next()));
+                TreeVisualizer vis = new TreeVisualizer(file);
+                vis.visualize();
             }
-        } while (choice != 4);
+        } while (choice != 5);
     }
 
     // Creates a classifier from a client provided information by either:

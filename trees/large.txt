@@ -1,0 +1,235 @@
+Feature: wordPercent~here
+Threshold: 0.0625
+Feature: wordPercent~later
+Threshold: 0.08333333333333333
+Feature: wordPercent~no
+Threshold: 0.045454545454545456
+Feature: wordPercent~the
+Threshold: 0.04838709677419355
+Feature: wordPercent~great
+Threshold: 0.039473684210526314
+Feature: wordPercent~I
+Threshold: 0.07352941176470588
+Feature: wordPercent~as
+Threshold: 0.06845238095238095
+Feature: wordPercent~New
+Threshold: 0.038461538461538464
+Feature: wordPercent~:)it
+Threshold: 0.05
+Feature: wordPercent~"Hi
+Threshold: 0.038461538461538464
+Feature: wordPercent~times.
+Threshold: 0.038461538461538464
+Feature: wordPercent~don't
+Threshold: 0.045454545454545456
+Feature: wordPercent~house
+Threshold: 0.1
+Feature: wordPercent~but
+Threshold: 0.021739130434782608
+Feature: wordPercent~and
+Threshold: 0.03333333333333333
+Feature: wordPercent~you
+Threshold: 0.10416666666666666
+Feature: wordPercent~be
+Threshold: 0.07142857142857142
+Feature: wordPercent~do."
+Threshold: 0.125
+Feature: wordPercent~calls..messages..missed
+Threshold: 0.16666666666666666
+Feature: wordPercent~Watching
+Threshold: 0.1
+Feature: wordPercent~"Dear,
+Threshold: 0.1
+Feature: wordPercent~like
+Threshold: 0.0625
+Feature: wordPercent~now...
+Threshold: 0.1
+Feature: wordPercent~question.
+Threshold: 0.125
+Feature: wordPercent~your
+Threshold: 0.057692307692307696
+Feature: wordPercent~buy
+Threshold: 0.025
+Feature: wordPercent~anything
+Threshold: 0.1
+Feature: wordPercent~Smile
+Threshold: 0.09615384615384616
+Feature: wordPercent~wif
+Threshold: 0.08333333333333333
+Feature: wordPercent~@
+Threshold: 0.038461538461538464
+Feature: wordPercent~WHO
+Threshold: 0.125
+Feature: wordPercent~why?
+Threshold: 0.08333333333333333
+Feature: wordPercent~I'm
+Threshold: 0.03571428571428571
+Feature: wordPercent~home.
+Threshold: 0.021739130434782608
+Feature: wordPercent~when
+Threshold: 0.045454545454545456
+Feature: wordPercent~very
+Threshold: 0.03333333333333333
+Feature: wordPercent~buying?
+Threshold: 0.07142857142857142
+Feature: wordPercent~my
+Threshold: 0.07142857142857142
+Feature: wordPercent~ha
+Threshold: 0.09090909090909091
+Feature: wordPercent~my
+Threshold: 0.027777777777777776
+Feature: wordPercent~log
+Threshold: 0.03125
+Feature: wordPercent~checking
+Threshold: 0.08333333333333333
+Feature: wordPercent~watching
+Threshold: 0.125
+Feature: wordPercent~Going
+Threshold: 0.125
+Feature: wordPercent~trust
+Threshold: 0.08333333333333333
+Feature: wordPercent~R
+Threshold: 0.05555555555555555
+Feature: wordPercent~Anything
+Threshold: 0.125
+Feature: wordPercent~reply...
+Threshold: 0.125
+Feature: wordPercent~does
+Threshold: 0.1
+Feature: wordPercent~with
+Threshold: 0.04
+Feature: wordPercent~..
+Threshold: 0.07142857142857142
+Feature: wordPercent~"Ela
+Threshold: 0.07142857142857142
+Feature: wordPercent~got
+Threshold: 0.08333333333333333
+Feature: wordPercent~are
+Threshold: 0.1
+Feature: wordPercent~we
+Threshold: 0.08333333333333333
+Feature: wordPercent~cut
+Threshold: 0.041666666666666664
+Feature: wordPercent~not
+Threshold: 0.07142857142857142
+Feature: wordPercent~to
+Threshold: 0.05
+Feature: wordPercent~later"
+Threshold: 0.125
+Feature: wordPercent~that
+Threshold: 0.02631578947368421
+Feature: wordPercent~U
+Threshold: 0.09090909090909091
+Feature: wordPercent~XX
+Threshold: 0.05
+Feature: wordPercent~Gud
+Threshold: 0.07142857142857142
+Feature: wordPercent~lucky
+Threshold: 0.0625
+Feature: wordPercent~in
+Threshold: 0.021739130434782608
+Feature: wordPercent~next
+Threshold: 0.16666666666666666
+Feature: wordPercent~i
+Threshold: 0.05263157894736842
+Feature: wordPercent~maybe
+Threshold: 0.03571428571428571
+spam
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+Feature: wordPercent~entry
+Threshold: 0.03571428571428571
+Feature: wordPercent~STOP
+Threshold: 0.041666666666666664
+Feature: wordPercent~ard...
+Threshold: 0.025
+spam
+ham
+spam
+spam
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+Feature: wordPercent~be
+Threshold: 0.034482758620689655
+ham
+spam
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+ham
+Feature: wordPercent~to
+Threshold: 0.06839080459770114
+ham
+Feature: wordPercent~5249,
+Threshold: 0.017241379310344827
+ham
+spam
+ham
+ham
+ham
+ham
+ham
+ham
+Feature: wordPercent~delivery
+Threshold: 0.05263157894736842
+Feature: wordPercent~for
+Threshold: 0.038461538461538464
+spam
+ham
+spam
+ham
+ham
+ham
+Feature: wordPercent~click
+Threshold: 0.05263157894736842
+Feature: wordPercent~about
+Threshold: 0.03333333333333333
+ham
+spam
+spam
+ham
+ham
+ham
