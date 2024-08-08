@@ -19,7 +19,7 @@ public class Client {
         Scanner console = new Scanner(System.in);
 
         if (DEBUG) {
-            System.out.println("What tree file do you want visualized? Enter the file path");
+            System.out.println("What tree file do you want visualized? Enter the file path (e.g. trees/simple.txt)");
             System.out.print("> ");
             Scanner file = new Scanner(new File(console.next()));
             TreeVisualizer vis = new TreeVisualizer(file);
