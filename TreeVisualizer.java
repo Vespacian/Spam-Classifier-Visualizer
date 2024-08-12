@@ -134,8 +134,9 @@ public class TreeVisualizer extends JFrame{
         component.getGraph().getView().setTranslate(new mxPoint(padding, padding)); // initial position
 
         mxRectangle graphSize = adapter.getGraphBounds(); // adding padding
-        int newWidth = (int) graphSize.getWidth() + padding*2;
-        int newHeight = (int) graphSize.getHeight() + padding*2;
+        int newWidth = (int) graphSize.getWidth() + padding*2; // *2 to handle for both sides
+        int newHeight = (int) graphSize.getHeight() + padding*2; // *2 for top and bottom
+        // limit max dimensions
         Dimension paddedSize = new Dimension(
             (newWidth > 800)? 800 : newWidth, 
             (newHeight > 800)? 800 : newHeight
